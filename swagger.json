@@ -1,0 +1,214 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the reference API for Orthanc 1.3.1.",
+    "version": "1.0.0",
+    "title": "Orthanc Swagger / JSONAPI",
+    "contact": {
+      "email": "s.jodogne@gmail.com"
+    },
+    "license": {
+      "name": "GPL v3",
+      "url": "http://www.gnu.org/copyleft/gpl.en.html"
+    }
+  },
+  "host": "localhost:8042",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "{resourceType}",
+      "description": "Operations that apply to patients, studies, series or instances"
+    },
+    {
+      "name": "changes",
+      "description": "Log that records every received DICOM instance"
+    },
+    {
+      "name": "exports",
+      "description": "Log that records every exported DICOM instance"
+    },
+    {
+      "name": "instances",
+      "description": "Operations about DICOM instances"
+    },
+    {
+      "name": "modalities",
+      "description": "Operations about other DICOM nodes"
+    },
+    {
+      "name": "patients",
+      "description": "Operations about patients"
+    },
+    {
+      "name": "peers",
+      "description": "Operations about other Orthanc peers"
+    },
+    {
+      "name": "plugins",
+      "description": "Operations about Orthanc plugins"
+    },
+    {
+      "name": "queries",
+      "description": "Operations about DICOM queries"
+    },
+    {
+      "name": "series",
+      "description": "Operations about DICOM series"
+    },
+    {
+      "name": "statistics",
+      "description": "Statistics including patient, study, series and instance count as well as disk space usage"
+    },
+    {
+      "name": "studies",
+      "description": "Operations about DICOM studies"
+    },
+    {
+      "name": "system",
+      "description": "Orthanc System information"
+    },
+    {
+      "name": "tools",
+      "description": "Tools to create DICOM archives and Orthanc system functions"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/changes": {
+      "get": {
+        "tags": [
+          "changes"
+        ],
+        "summary": "Get the contents of the change log",
+        "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "last",
+            "type": "boolean",
+            "description": "Return the last change in the log."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "integer",
+            "description": "Limit the number of items to be returned.",
+            "default": 100
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "type": "integer",
+            "description": "Return change items after this sequential value.",
+            "default": 0
+          }
+        ],
+        "consumes": [
+          "text/html",
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Changes"
+            },
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "changes"
+        ],
+        "summary": "Clear the contents of the change log",
+        "description": "",
+        "consumes": [
+          "text/html"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Changes": {
+      "type": "object",
+      "properties": {
+        "Changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ChangeType": {
+                "type": "string",
+                "description": "Type of change",
+                "enum": [
+                  "NewStudy",
+                  "NewPatient",
+                  "NewInstance",
+                  "NewSeries",
+                  "StableStudy",
+                  "StablePatient",
+                  "StableInstance",
+                  "StableSeries"
+                ]
+              },
+              "Date": {
+                "type": "string",
+                "description": "Change date (ISO format)",
+                "example": "20160511T210625"
+              },
+              "ID": {
+                "type": "string",
+                "description": "Resource Unique Identifier",
+                "example": "53f436e0-9c63bce0-20118a60-eb66e036-4e64188b"
+              },
+              "Path": {
+                "type": "string",
+                "example": "/studies/53f436e0-9c63bce0-20118a60-eb66e036"
+              },
+              "ResourceType": {
+                "type": "string",
+                "description": "Type of Resource",
+                "enum": [
+                  "Study",
+                  "Patient",
+                  "Instance",
+                  "Series"
+                ]
+              },
+              "Seq": {
+                "type": "integer",
+                "description": "Sequential changeset number",
+                "example": 301
+              }
+            }
+          }
+        },
+        "Done": {
+          "type": "boolean",
+          "description": "Indicates if there are more changes in the log that follow the returned change list."
+        },
+        "Last": {
+          "type": "integer",
+          "description": "Indicates the last change item shown in the returned change list."
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Orthanc Book",
+    "url": "http://book.orthanc-server.com"
+  }
+}
